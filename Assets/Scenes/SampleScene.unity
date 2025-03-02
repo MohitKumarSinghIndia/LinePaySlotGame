@@ -490,7 +490,7 @@ GameObject:
   - component: {fileID: 206373735}
   - component: {fileID: 206373734}
   m_Layer: 5
-  m_Name: Bet Amount Test
+  m_Name: Bet Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -772,7 +772,7 @@ MonoBehaviour:
   - {fileID: 1626344581}
   - {fileID: 1575880959}
   reelTransform: {fileID: 230116092}
-  maxScrollSpeed: 3200
+  maxScrollSpeed: 3400
   minScrollSpeed: 50
   spinDuration: 4
   symbolHeight: 250
@@ -1471,7 +1471,7 @@ MonoBehaviour:
   - {fileID: 556311541}
   - {fileID: 126255603}
   reelTransform: {fileID: 647145779}
-  maxScrollSpeed: 3200
+  maxScrollSpeed: 3400
   minScrollSpeed: 50
   spinDuration: 3
   symbolHeight: 250
@@ -2518,7 +2518,7 @@ GameObject:
   - component: {fileID: 1511347292}
   - component: {fileID: 1511347291}
   m_Layer: 5
-  m_Name: Bet Amount Test
+  m_Name: Balance Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2788,7 +2788,7 @@ MonoBehaviour:
   - {fileID: 2098982880}
   - {fileID: 756697412}
   reelTransform: {fileID: 1525607903}
-  maxScrollSpeed: 3200
+  maxScrollSpeed: 3400
   minScrollSpeed: 50
   spinDuration: 4
   symbolHeight: 250
@@ -3458,16 +3458,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01ca79c22fa3e8499d31488a5557200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reels:
-  - {fileID: 230116093}
-  - {fileID: 647145780}
-  - {fileID: 1525607904}
+  reel1: {fileID: 230116093}
+  reel2: {fileID: 647145780}
+  reel3: {fileID: 1525607904}
+  balanceDisplay: {fileID: 1511347291}
+  resultDisplay: {fileID: 2003658032}
+  betAmountDisplay: {fileID: 206373734}
   spinButton: {fileID: 1163070211}
-  balanceText: {fileID: 1511347291}
-  betText: {fileID: 206373734}
-  resultText: {fileID: 2003658032}
-  wildSymbol: {fileID: 21300000, guid: d2f121384ca2e2240aeb1b598ef1a3be, type: 3}
-  scatterSymbol: {fileID: 21300000, guid: a33047c95b4e6dc46b9b05cfcadd9979, type: 3}
 --- !u!4 &2058272154
 Transform:
   m_ObjectHideFlags: 0

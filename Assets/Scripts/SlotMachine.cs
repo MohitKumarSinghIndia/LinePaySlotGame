@@ -1,158 +1,194 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class SlotMachine : MonoBehaviour
+public class SlotMachineManager : MonoBehaviour
 {
-    public ReelController[] reels; // All reels in the slot machine
+    // Reel Controllers
+    public ReelController reel1, reel2, reel3;
+
+    // Betting & Balance UI
+    public TMP_Text balanceDisplay, resultDisplay, betAmountDisplay;
     public Button spinButton;
-    public TMP_Text balanceText, betText, resultText; // UI elements
 
-    public Sprite wildSymbol, scatterSymbol; // Wild and Scatter symbols
-
-    private int playerBalance = 1000;
+    // Balance and Bet
+    private int balance = 1000;
     private int betAmount = 10;
-    private bool isSpinning = false; // Prevent multiple spins
+
+    // Free Spin Tracker
+    private int freeSpinCounter = 0;
+    private const int maxFreeSpins = 3;
 
     private void Start()
     {
+        spinButton.onClick.AddListener(Spin);
         UpdateUI();
-        spinButton.onClick.AddListener(SpinAllReels);
     }
 
-    public void SpinAllReels()
+    // Spin Button Action
+    public void Spin()
     {
-        if (isSpinning || playerBalance < betAmount)
-            return; // Prevents multiple spins and checks balance
-
-        isSpinning = true;
-        resultText.text = "Spinning...";
-        spinButton.interactable = false; // Disable button during spin
-
-        playerBalance -= betAmount; // Deduct bet
-        UpdateUI();
-
-        // Start each reel with a delay for a natural spin effect
-        for (int i = 0; i < reels.Length; i++)
+        if (balance < betAmount)
         {
-            StartCoroutine(SpinWithDelay(reels[i], i * 0.3f));
+            resultDisplay.text = "Not enough balance!";
+            return;
         }
 
-        StartCoroutine(WaitForReelsToStop());
-    }
-
-    private IEnumerator SpinWithDelay(ReelController reel, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        reel.StartSpin();
-    }
-
-    private IEnumerator WaitForReelsToStop()
-    {
-        yield return new WaitForSeconds(5f); // Wait for reels to stop spinning
-
-        StartCoroutine(CheckSpinResult());
-    }
-
-    private IEnumerator CheckSpinResult()
-    {
-        yield return new WaitForSeconds(1f); // Wait for reels to stop
-
-        (int winAmount, string winMessage) = CalculateWinnings();
-        playerBalance += winAmount;
-
-        resultText.text = winAmount > 0 ? $"You won: ${winAmount}! {winMessage}" : "No win, try again!";
-
+        balance -= betAmount;
         UpdateUI();
-        isSpinning = false;
-        spinButton.interactable = true; // Enable button
+        StartCoroutine(SpinReels());
     }
 
-    private (int, string) CalculateWinnings()
+    // Handle Full Spin Cycle
+    private IEnumerator SpinReels()
     {
-        Sprite firstSymbol = reels[0].GetMiddleSymbol();
-        Sprite secondSymbol = reels[1].GetMiddleSymbol();
-        Sprite thirdSymbol = reels[2].GetMiddleSymbol();
+        spinButton.interactable = false;
 
-        int winAmount = 0;
-        string winMessage = "";
+        // Start Spinning All Reels
+        reel1.StartSpin();
+        reel2.StartSpin();
+        reel3.StartSpin();
 
-        int wildCount = 0, scatterCount = 0;
+        resultDisplay.text = "Spinning...";
 
-        // Count Wilds and Scatters
-        if (firstSymbol == wildSymbol) wildCount++;
-        if (secondSymbol == wildSymbol) wildCount++;
-        if (thirdSymbol == wildSymbol) wildCount++;
+        // Wait until ALL reels stop spinning
+        yield return new WaitUntil(() => !reel1.IsSpinning() && !reel2.IsSpinning() && !reel3.IsSpinning());
 
-        if (firstSymbol == scatterSymbol) scatterCount++;
-        if (secondSymbol == scatterSymbol) scatterCount++;
-        if (thirdSymbol == scatterSymbol) scatterCount++;
+        // Add a short delay before checking the win condition
+        yield return new WaitForSeconds(0.5f);
 
-        // **SCATTER BONUS**
-        if (scatterCount == 1)
+        // Now Check Win Condition
+        CheckWin();
+
+        spinButton.interactable = true;
+    }
+
+    private void CheckWin()
+    {
+        // Get Middle Symbol Image Names
+        string firstSymbol = reel1.GetMiddleSymbol().name;
+        string secondSymbol = reel2.GetMiddleSymbol().name;
+        string thirdSymbol = reel3.GetMiddleSymbol().name;
+
+        Debug.Log($"First Symbol: {firstSymbol}");
+        Debug.Log($"Second Symbol: {secondSymbol}");
+        Debug.Log($"Third Symbol: {thirdSymbol}");
+
+        int winnings = 0;
+        int scatterCount = 0;
+        string winReason = "";
+
+        // Identify Wild & Scatter Symbols
+        bool isFirstWild = firstSymbol.Contains("Wild");
+        bool isSecondWild = secondSymbol.Contains("Wild");
+        bool isThirdWild = thirdSymbol.Contains("Wild");
+
+        bool isFirstScatter = firstSymbol.Contains("Scatter");
+        bool isSecondScatter = secondSymbol.Contains("Scatter");
+        bool isThirdScatter = thirdSymbol.Contains("Scatter");
+
+        // Count scatter symbols
+        if (isFirstScatter) scatterCount++;
+        if (isSecondScatter) scatterCount++;
+        if (isThirdScatter) scatterCount++;
+
+        // Scatter Wins
+        if (scatterCount == 2)
         {
-            winAmount += betAmount;
-            winMessage += "(Single Scatter Bonus x1) ";
-        }
-        else if (scatterCount == 2)
-        {
-            winAmount += betAmount * 2;
-            winMessage += "(Scatter Bonus x2) ";
+            winnings += betAmount * 2;
+            winReason = "Two scatter symbols!";
         }
         else if (scatterCount == 3)
         {
-            winAmount += betAmount * 5;
-            winMessage += "(Scatter Jackpot x5) ";
+            winnings += betAmount * 5;
+            winReason = "Three scatter symbols! Free spin awarded!";
+            StartCoroutine(FreeSpin());
         }
 
-        // **MATCH CONDITIONS**
-        bool firstTwoMatch = (firstSymbol == secondSymbol || firstSymbol == wildSymbol || secondSymbol == wildSymbol);
-        bool lastTwoMatch = (secondSymbol == thirdSymbol || secondSymbol == wildSymbol || thirdSymbol == wildSymbol);
-        bool allThreeMatch = (firstSymbol == secondSymbol && secondSymbol == thirdSymbol) || wildCount > 0;
+        // Regular Line Wins (including wilds)
+        if (firstSymbol == secondSymbol && secondSymbol == thirdSymbol)
+        {
+            winnings += betAmount * 5;
+            winReason = $"Three matching symbols: {firstSymbol}";
+        }
+        else if (isFirstWild && secondSymbol == thirdSymbol)
+        {
+            winnings += betAmount * 5;
+            winReason = $"Wild + two matching symbols: {secondSymbol}";
+        }
+        else if (isSecondWild && firstSymbol == thirdSymbol)
+        {
+            winnings += betAmount * 5;
+            winReason = $"Wild in middle + matching symbols: {firstSymbol}";
+        }
+        else if (isThirdWild && firstSymbol == secondSymbol)
+        {
+            winnings += betAmount * 5;
+            winReason = $"Wild at end + two matching symbols: {firstSymbol}";
+        }
+        // Partial Wins (only if adjacent symbols match)
+        else if ((firstSymbol == secondSymbol && thirdSymbol != firstSymbol) ||
+                 (secondSymbol == thirdSymbol && firstSymbol != secondSymbol))
+        {
+            winnings += betAmount * 2;
+            winReason = $"Nice! You got a partial win with {firstSymbol} and {secondSymbol}!";
+        }
 
-        // **Winning Calculation**
-        if (allThreeMatch)
+        // Special Case: Double Wild Bonus
+        else if ((isFirstWild && isSecondWild) || (isSecondWild && isThirdWild))
         {
-            winAmount += betAmount * 5;
-            winMessage += "(Jackpot x5) ";
-        }
-        if (firstTwoMatch)
-        {
-            winAmount += betAmount * 2;
-            winMessage += "(First Two Match x2) ";
-        }
-        if (lastTwoMatch)
-        {
-            winAmount += betAmount * 2;
-            winMessage += "(Last Two Match x2) ";
+            winnings += betAmount * 3;
+            winReason = "Double wild boost!";
         }
 
-        // **✅ NEW: First & Last Match (Even if Scatter is in the Middle)**
-        if (firstSymbol == thirdSymbol && firstSymbol != scatterSymbol)
-        {
-            winAmount += betAmount * 3;
-            winMessage += "(First & Last Match x3) ";
-        }
-
-        return (winAmount, winMessage);
+        // Update Balance & Display
+        balance += winnings;
+        UpdateUI();
+        resultDisplay.text = winnings > 0 ? $"You won: ${winnings}! {winReason}" : "Try again!";
     }
 
+    // Free Spin Functionality (limited to prevent infinite loops)
+    private IEnumerator FreeSpin()
+    {
+        if (freeSpinCounter >= maxFreeSpins)
+        {
+            resultDisplay.text = "No more free spins!";
+            yield break;
+        }
+
+        freeSpinCounter++;
+        resultDisplay.text = "Free Spin Awarded!";
+        yield return new WaitForSeconds(1.5f);
+        Spin(); // Automatically trigger a free spin
+    }
+
+    // Increase Bet Amount
     public void IncreaseBet()
     {
-        betAmount = Mathf.Min(betAmount + 10, playerBalance);
+        betAmount += 10;
         UpdateUI();
     }
 
+    // Decrease Bet Amount
     public void DecreaseBet()
     {
-        betAmount = Mathf.Max(betAmount - 10, 10);
-        UpdateUI();
+        if (betAmount > 10)
+        {
+            betAmount -= 10;
+            UpdateUI();
+        }
     }
 
+    // Update UI Elements
     private void UpdateUI()
     {
-        balanceText.text = "Balance: $" + playerBalance;
-        betText.text = "Bet: $" + betAmount;
+        balanceDisplay.text = $"Balance: ${balance}";
+        betAmountDisplay.text = $"Bet: ${betAmount}";
+    }
+
+    private void OnDestroy()
+    {
+        spinButton.onClick.RemoveListener(Spin);
     }
 }

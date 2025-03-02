@@ -4,25 +4,31 @@ using UnityEngine.UI;
 
 public class ReelController : MonoBehaviour
 {
-    public Image[] reelImages; // The symbols in the reel (Top, Middle, Bottom)
-    public RectTransform reelTransform; // Parent container that moves
-    public float maxScrollSpeed = 1000f; // Fast initial scrolling speed
-    public float minScrollSpeed = 50f; // Slower speed near stopping
-    public float spinDuration = 3f; // Total spin time before stopping
-    public float symbolHeight = 200f; // Height of each symbol
+    // 🎨 Reel Symbols (Top, Middle, Bottom)
+    public Image[] reelImages;
+    public RectTransform reelTransform; 
 
-    public Sprite[] symbolSprites; // Different symbols for the reel
+    // 🔄 Spin Parameters
+    public float maxScrollSpeed = 1000f; 
+    public float minScrollSpeed = 50f; 
+    public float spinDuration = 3f; 
+    public float symbolHeight = 200f; 
 
+    // 🎰 Available Symbols
+    public Sprite[] symbolSprites;
+
+    // 🔧 Private Variables
     private bool isSpinning = false;
     private float resetPositionY;
-    private int finalSymbolIndex; // Store the final symbol to stop at
+    private int finalSymbolIndex;
 
     private void Start()
     {
-        resetPositionY = reelTransform.anchoredPosition.y; // Store original position
-        RandomizeSymbols(); // Ensure random symbols at start
+        resetPositionY = reelTransform.anchoredPosition.y;
+        RandomizeSymbols(); 
     }
 
+    // 🎯 Start Spinning the Reel
     public void StartSpin()
     {
         if (!isSpinning)
@@ -31,6 +37,7 @@ public class ReelController : MonoBehaviour
         }
     }
 
+    // 🔄 Handle Reel Spinning
     private IEnumerator SpinReel()
     {
         isSpinning = true;
@@ -39,76 +46,78 @@ public class ReelController : MonoBehaviour
 
         while (elapsedTime < spinDuration)
         {
-            // **Decrease speed near the end of spinning**
-            if (elapsedTime > spinDuration * 0.7f) // Slow down in the last 30% of spin time
+            if (elapsedTime > spinDuration * 0.7f) 
             {
                 currentSpeed = Mathf.Lerp(maxScrollSpeed, minScrollSpeed, (elapsedTime - spinDuration * 0.7f) / (spinDuration * 0.3f));
             }
 
             reelTransform.anchoredPosition += new Vector2(0, currentSpeed * Time.deltaTime);
 
-            // Reset position when it goes too high
+            // 🔄 Reset reel position when it moves too high
             if (reelTransform.anchoredPosition.y >= resetPositionY + symbolHeight)
             {
                 reelTransform.anchoredPosition = new Vector2(reelTransform.anchoredPosition.x, resetPositionY);
-                RandomizeSymbols(); // Keep changing symbols while spinning
+                RandomizeSymbols();
             }
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // **Pick a final stopping symbol**
+        // 🎰 Choose Final Stopping Symbol
         finalSymbolIndex = Random.Range(0, symbolSprites.Length);
-
-        // **Update all three symbols based on finalSymbolIndex**
         UpdateFinalSymbols(finalSymbolIndex);
 
-        yield return StartCoroutine(SnapToNearestSymbol()); // Smooth stop
+        // 🛑 Smooth Snap to Final Position
+        yield return SnapToFinalPosition();
     }
 
-    private IEnumerator SnapToNearestSymbol()
+    // 🎯 Smoothly Align Reel to Final Position
+    private IEnumerator SnapToFinalPosition()
     {
-        float targetY = Mathf.Round(reelTransform.anchoredPosition.y / symbolHeight) * symbolHeight;
-        float duration = 0.3f; // Smooth snapping time
-        float elapsed = 0f;
+        float elapsedTime = 0f;
+        float duration = 0.2f;
 
         Vector2 startPos = reelTransform.anchoredPosition;
-        Vector2 endPos = new Vector2(startPos.x, targetY);
+        Vector2 endPos = new Vector2(startPos.x, resetPositionY);
 
-        while (elapsed < duration)
+        while (elapsedTime < duration)
         {
-            reelTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, elapsed / duration);
-            elapsed += Time.deltaTime;
+            reelTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        reelTransform.anchoredPosition = endPos; // Ensure exact positioning
-        StopSpin();
-    }
-
-    private void StopSpin()
-    {
+        reelTransform.anchoredPosition = endPos;
         isSpinning = false;
     }
 
+    // 🔄 Randomize All Symbols
     private void RandomizeSymbols()
     {
-        // **Randomize only top and bottom symbols, NOT middle**
-        reelImages[0].sprite = symbolSprites[Random.Range(0, symbolSprites.Length)]; // Top
-        reelImages[2].sprite = symbolSprites[Random.Range(0, symbolSprites.Length)]; // Bottom
+        for (int i = 0; i < reelImages.Length; i++)
+        {
+            reelImages[i].sprite = symbolSprites[Random.Range(0, symbolSprites.Length)];
+        }
     }
 
+    // 🎰 Align Final Symbols Correctly
     private void UpdateFinalSymbols(int symbolIndex)
     {
-        // **Ensuring final symbol alignment when stopping**
         reelImages[1].sprite = symbolSprites[symbolIndex]; // Middle stays fixed
-        reelImages[0].sprite = symbolSprites[(symbolIndex + symbolSprites.Length - 1) % symbolSprites.Length]; // Top
+        reelImages[0].sprite = symbolSprites[(symbolIndex - 1 + symbolSprites.Length) % symbolSprites.Length]; // Top
         reelImages[2].sprite = symbolSprites[(symbolIndex + 1) % symbolSprites.Length]; // Bottom
     }
 
+    // 🚀 Check if Reel is Still Spinning
+    public bool IsSpinning()
+    {
+        return isSpinning;
+    }
+
+    // 🎯 Get Middle Symbol for Win Checking
     public Sprite GetMiddleSymbol()
     {
-        return reelImages[1].sprite; // Return middle symbol for win checking
+        return reelImages[1].sprite;
     }
 }
