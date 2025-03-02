@@ -183,8 +183,8 @@ public class SlotMachineManager : MonoBehaviour
     // Update UI Elements
     private void UpdateUI()
     {
-        balanceDisplay.text = $"Balance: ${balance}";
-        betAmountDisplay.text = $"Bet: ${betAmount}";
+        balanceDisplay.text = $"${balance}";
+        betAmountDisplay.text = $"${betAmount}";
     }
 
     private void OnDestroy()
