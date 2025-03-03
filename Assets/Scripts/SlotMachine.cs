@@ -5,20 +5,19 @@ using UnityEngine.UI;
 
 public class SlotMachineManager : MonoBehaviour
 {
-    // Reel Controllers
     public ReelController reel1, reel2, reel3;
+    public WinAnimation winAnimation;
 
-    // Betting & Balance UI
     public TMP_Text balanceDisplay, resultDisplay, betAmountDisplay;
     public Button spinButton;
 
-    // Balance and Bet
     private int balance = 1000;
     private int betAmount = 10;
 
-    // Free Spin Tracker
     private int freeSpinCounter = 0;
     private const int maxFreeSpins = 3;
+
+
 
     private void Start()
     {
@@ -26,7 +25,6 @@ public class SlotMachineManager : MonoBehaviour
         UpdateUI();
     }
 
-    // Spin Button Action
     public void Spin()
     {
         if (balance < betAmount)
@@ -40,46 +38,37 @@ public class SlotMachineManager : MonoBehaviour
         StartCoroutine(SpinReels());
     }
 
-    // Handle Full Spin Cycle
     private IEnumerator SpinReels()
     {
         spinButton.interactable = false;
 
-        // Start Spinning All Reels
         reel1.StartSpin();
         reel2.StartSpin();
         reel3.StartSpin();
 
         resultDisplay.text = "Spinning...";
 
-        // Wait until ALL reels stop spinning
         yield return new WaitUntil(() => !reel1.IsSpinning() && !reel2.IsSpinning() && !reel3.IsSpinning());
 
-        // Add a short delay before checking the win condition
         yield return new WaitForSeconds(0.5f);
 
-        // Now Check Win Condition
         CheckWin();
-
-        spinButton.interactable = true;
     }
 
     private void CheckWin()
     {
-        // Get Middle Symbol Image Names
         string firstSymbol = reel1.GetMiddleSymbol().name;
         string secondSymbol = reel2.GetMiddleSymbol().name;
         string thirdSymbol = reel3.GetMiddleSymbol().name;
 
-        Debug.Log($"First Symbol: {firstSymbol}");
-        Debug.Log($"Second Symbol: {secondSymbol}");
-        Debug.Log($"Third Symbol: {thirdSymbol}");
+        Sprite firstSymbolSprite = reel1.GetMiddleSymbol();
+        Sprite secondSymbolSprite = reel2.GetMiddleSymbol();
+        Sprite thirdSymbolSprite = reel3.GetMiddleSymbol();
 
         int winnings = 0;
         int scatterCount = 0;
         string winReason = "";
 
-        // Identify Wild & Scatter Symbols
         bool isFirstWild = firstSymbol.Contains("Wild");
         bool isSecondWild = secondSymbol.Contains("Wild");
         bool isThirdWild = thirdSymbol.Contains("Wild");
@@ -88,7 +77,6 @@ public class SlotMachineManager : MonoBehaviour
         bool isSecondScatter = secondSymbol.Contains("Scatter");
         bool isThirdScatter = thirdSymbol.Contains("Scatter");
 
-        // Count scatter symbols
         if (isFirstScatter) scatterCount++;
         if (isSecondScatter) scatterCount++;
         if (isThirdScatter) scatterCount++;
@@ -142,13 +130,32 @@ public class SlotMachineManager : MonoBehaviour
             winReason = "Double wild boost!";
         }
 
-        // Update Balance & Display
+        if (winnings > 0)
+        {
+            winAnimation.PlayWinAnimation(firstSymbolSprite, secondSymbolSprite, thirdSymbolSprite);
+
+            Delay(3.5f, nameof(EnableSpinButton));
+        }
+        else
+        {
+            spinButton.interactable = true;
+        }
+
         balance += winnings;
         UpdateUI();
         resultDisplay.text = winnings > 0 ? $"You won: ${winnings}! {winReason}" : "Try again!";
+
+    }
+    private void Delay(float delay, string methodName) 
+    { 
+        Invoke(methodName, delay); 
     }
 
-    // Free Spin Functionality (limited to prevent infinite loops)
+    private void EnableSpinButton()
+    {
+        spinButton.interactable = true;
+    }
+
     private IEnumerator FreeSpin()
     {
         if (freeSpinCounter >= maxFreeSpins)
@@ -160,17 +167,14 @@ public class SlotMachineManager : MonoBehaviour
         freeSpinCounter++;
         resultDisplay.text = "Free Spin Awarded!";
         yield return new WaitForSeconds(1.5f);
-        Spin(); // Automatically trigger a free spin
+        Spin();
     }
-
-    // Increase Bet Amount
     public void IncreaseBet()
     {
         betAmount += 10;
         UpdateUI();
     }
 
-    // Decrease Bet Amount
     public void DecreaseBet()
     {
         if (betAmount > 10)
@@ -180,7 +184,6 @@ public class SlotMachineManager : MonoBehaviour
         }
     }
 
-    // Update UI Elements
     private void UpdateUI()
     {
         balanceDisplay.text = $"${balance}";

@@ -660,10 +660,6 @@ MonoBehaviour:
   - {fileID: 1195789669}
   - {fileID: 1637367600}
   reelTransform: {fileID: 265469391}
-  maxScrollSpeed: 5000
-  minScrollSpeed: 50
-  spinDuration: 7
-  symbolHeight: 350
   symbolSprites:
   - {fileID: 21300000, guid: 1ca7bb013c7d44d46ac78dad5b1fbd63, type: 3}
   - {fileID: 21300000, guid: c9d2383c078cf1748b4a63035dcb108a, type: 3}
@@ -675,6 +671,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2653fdb102527dd43871d6f1d93b2895, type: 3}
   - {fileID: 21300000, guid: d2f121384ca2e2240aeb1b598ef1a3be, type: 3}
   - {fileID: 21300000, guid: a33047c95b4e6dc46b9b05cfcadd9979, type: 3}
+  maxScrollSpeed: 4200
+  minScrollSpeed: 50
+  spinDuration: 5
+  symbolHeight: 350
 --- !u!1 &287771949
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,7 +813,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -837,7 +837,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1020,10 +1020,6 @@ MonoBehaviour:
   - {fileID: 1153129025}
   - {fileID: 1714493288}
   reelTransform: {fileID: 381865720}
-  maxScrollSpeed: 5000
-  minScrollSpeed: 50
-  spinDuration: 5
-  symbolHeight: 350
   symbolSprites:
   - {fileID: 21300000, guid: 1ca7bb013c7d44d46ac78dad5b1fbd63, type: 3}
   - {fileID: 21300000, guid: c9d2383c078cf1748b4a63035dcb108a, type: 3}
@@ -1035,6 +1031,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2653fdb102527dd43871d6f1d93b2895, type: 3}
   - {fileID: 21300000, guid: d2f121384ca2e2240aeb1b598ef1a3be, type: 3}
   - {fileID: 21300000, guid: a33047c95b4e6dc46b9b05cfcadd9979, type: 3}
+  maxScrollSpeed: 4200
+  minScrollSpeed: 50
+  spinDuration: 3
+  symbolHeight: 350
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,7 +1597,7 @@ GameObject:
   - component: {fileID: 975146675}
   - component: {fileID: 975146674}
   m_Layer: 5
-  m_Name: Background
+  m_Name: Reels Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1818,7 +1818,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1081106390
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1867,8 +1867,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278728312
+  m_fontColor: {r: 0.47058824, g: 0.21176471, b: 0.03137255, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1885,13 +1885,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38
-  m_fontSizeBase: 38
+  m_fontSize: 62
+  m_fontSizeBase: 62
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
   m_fontSizeMax: 0
-  m_fontStyle: 0
+  m_fontStyle: 17
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2080,10 +2080,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: ecd87a00059d9414bb2c6e7ecb362ccd, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: ecd87a00059d9414bb2c6e7ecb362ccd, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: ecd87a00059d9414bb2c6e7ecb362ccd, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: 93bd1eb53bfd6a942b91872e273f630b, type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: ec54ea22addeb4448af4a773319ed754, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: ec54ea22addeb4448af4a773319ed754, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: ec54ea22addeb4448af4a773319ed754, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: c6344b47107500648af506f32e106801, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -2115,7 +2115,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 93bd1eb53bfd6a942b91872e273f630b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c6344b47107500648af506f32e106801, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2344,6 +2344,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1195789667}
   m_CullTransparentMesh: 1
+--- !u!1 &1207023097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1207023098}
+  m_Layer: 5
+  m_Name: Winning Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1207023098
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207023097}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1607963358}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 150}
+  m_SizeDelta: {x: 1120, y: 400}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1312521395
 GameObject:
   m_ObjectHideFlags: 0
@@ -2480,6 +2515,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312521395}
   m_CullTransparentMesh: 1
+--- !u!1 &1435344919
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1435344920}
+  - component: {fileID: 1435344921}
+  m_Layer: 5
+  m_Name: WinAnimationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1435344920
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435344919}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1435344921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435344919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8f4337905cd19a4794582536aced5b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDuration: 3
+  scaleUpSize: 1.2
+  scaleNormalSize: 1
+  scaleSpeed: 0.5
+  fadeSpeed: 0.5
+  winPopupPrefab: {fileID: 7710510282961399988, guid: f4cd3a7aabac45c409a34c0a303a15f8, type: 3}
+  uiCanvas: {fileID: 1207023098}
+  popupSpacing: 365
 --- !u!1 &1450348128
 GameObject:
   m_ObjectHideFlags: 0
@@ -2805,10 +2892,6 @@ MonoBehaviour:
   - {fileID: 1932316546}
   - {fileID: 1514930051}
   reelTransform: {fileID: 1513658041}
-  maxScrollSpeed: 5000
-  minScrollSpeed: 50
-  spinDuration: 6
-  symbolHeight: 350
   symbolSprites:
   - {fileID: 21300000, guid: 1ca7bb013c7d44d46ac78dad5b1fbd63, type: 3}
   - {fileID: 21300000, guid: c9d2383c078cf1748b4a63035dcb108a, type: 3}
@@ -2820,6 +2903,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2653fdb102527dd43871d6f1d93b2895, type: 3}
   - {fileID: 21300000, guid: d2f121384ca2e2240aeb1b598ef1a3be, type: 3}
   - {fileID: 21300000, guid: a33047c95b4e6dc46b9b05cfcadd9979, type: 3}
+  maxScrollSpeed: 4200
+  minScrollSpeed: 50
+  spinDuration: 4
+  symbolHeight: 350
 --- !u!1 &1514930049
 GameObject:
   m_ObjectHideFlags: 0
@@ -3016,6 +3103,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 975146673}
+  - {fileID: 1207023098}
   m_Father: {fileID: 214609454}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4038,6 +4126,7 @@ MonoBehaviour:
   reel1: {fileID: 381865721}
   reel2: {fileID: 1513658042}
   reel3: {fileID: 265469392}
+  winAnimation: {fileID: 1435344921}
   balanceDisplay: {fileID: 1511347291}
   resultDisplay: {fileID: 2003658032}
   betAmountDisplay: {fileID: 206373734}
@@ -4067,3 +4156,4 @@ SceneRoots:
   - {fileID: 717454726}
   - {fileID: 214609454}
   - {fileID: 2058272154}
+  - {fileID: 1435344920}

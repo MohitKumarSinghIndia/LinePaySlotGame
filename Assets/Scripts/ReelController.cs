@@ -4,20 +4,15 @@ using UnityEngine.UI;
 
 public class ReelController : MonoBehaviour
 {
-    // 🎨 Reel Symbols (Top, Middle, Bottom)
     public Image[] reelImages;
     public RectTransform reelTransform; 
+    public Sprite[] symbolSprites;
 
-    // 🔄 Spin Parameters
     public float maxScrollSpeed = 1000f; 
     public float minScrollSpeed = 50f; 
     public float spinDuration = 3f; 
     public float symbolHeight = 200f; 
 
-    // 🎰 Available Symbols
-    public Sprite[] symbolSprites;
-
-    // 🔧 Private Variables
     private bool isSpinning = false;
     private float resetPositionY;
     private int finalSymbolIndex;
@@ -28,7 +23,6 @@ public class ReelController : MonoBehaviour
         RandomizeSymbols(); 
     }
 
-    // 🎯 Start Spinning the Reel
     public void StartSpin()
     {
         if (!isSpinning)
@@ -37,7 +31,6 @@ public class ReelController : MonoBehaviour
         }
     }
 
-    // 🔄 Handle Reel Spinning
     private IEnumerator SpinReel()
     {
         isSpinning = true;
@@ -53,7 +46,6 @@ public class ReelController : MonoBehaviour
 
             reelTransform.anchoredPosition += new Vector2(0, currentSpeed * Time.deltaTime);
 
-            // 🔄 Reset reel position when it moves too high
             if (reelTransform.anchoredPosition.y >= resetPositionY + symbolHeight)
             {
                 reelTransform.anchoredPosition = new Vector2(reelTransform.anchoredPosition.x, resetPositionY);
@@ -64,15 +56,12 @@ public class ReelController : MonoBehaviour
             yield return null;
         }
 
-        // 🎰 Choose Final Stopping Symbol
         finalSymbolIndex = Random.Range(0, symbolSprites.Length);
         UpdateFinalSymbols(finalSymbolIndex);
 
-        // 🛑 Smooth Snap to Final Position
         yield return SnapToFinalPosition();
     }
 
-    // 🎯 Smoothly Align Reel to Final Position
     private IEnumerator SnapToFinalPosition()
     {
         float elapsedTime = 0f;
@@ -92,7 +81,6 @@ public class ReelController : MonoBehaviour
         isSpinning = false;
     }
 
-    // 🔄 Randomize All Symbols
     private void RandomizeSymbols()
     {
         for (int i = 0; i < reelImages.Length; i++)
@@ -101,21 +89,18 @@ public class ReelController : MonoBehaviour
         }
     }
 
-    // 🎰 Align Final Symbols Correctly
     private void UpdateFinalSymbols(int symbolIndex)
     {
-        reelImages[1].sprite = symbolSprites[symbolIndex]; // Middle stays fixed
-        reelImages[0].sprite = symbolSprites[(symbolIndex - 1 + symbolSprites.Length) % symbolSprites.Length]; // Top
-        reelImages[2].sprite = symbolSprites[(symbolIndex + 1) % symbolSprites.Length]; // Bottom
+        reelImages[1].sprite = symbolSprites[symbolIndex];
+        reelImages[0].sprite = symbolSprites[(symbolIndex - 1 + symbolSprites.Length) % symbolSprites.Length];
+        reelImages[2].sprite = symbolSprites[(symbolIndex + 1) % symbolSprites.Length];
     }
 
-    // 🚀 Check if Reel is Still Spinning
     public bool IsSpinning()
     {
         return isSpinning;
     }
 
-    // 🎯 Get Middle Symbol for Win Checking
     public Sprite GetMiddleSymbol()
     {
         return reelImages[1].sprite;
