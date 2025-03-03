@@ -1,1 +1,1 @@
-# LinePaySlotGame
+# SlotMachineGame
